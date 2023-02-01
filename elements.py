@@ -2,6 +2,8 @@ from decor import *
 from players import *
 import tensorflow as tf
 
+
+
 class Board():
     def __init__(self) -> None:
         self.cells = [0 for _ in range(9)]

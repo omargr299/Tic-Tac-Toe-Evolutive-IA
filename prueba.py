@@ -12,10 +12,16 @@ class Cell(Panel):
         super().__init__(w,h,*groups)
         self.surface.fill(pg.Color(255,0,0,255))
         self.font = pg.font.Font(None,50)
+        self.piece = ""
 
-    def Put(self,piece:str,wnd):
-        piece:pg.Surface = self.font.render(piece, 1, (0,0,0))
-        print(self.rect.centerx )
+    def Put(self,piece:str,wnd:pg.Surface):
+        self.piece = piece
+        self.Render(wnd)
+    
+    def Render(self,wnd:pg.Surface):
+        print(self.piece)
+        piece:pg.Surface = self.font.render(self.piece, 1, (0,0,0))
+        print(self.rect.centerx)
         print(self.rect.centerx - piece.get_width())
         wnd.blit(piece,
                 (self.rect.centerx - piece.get_width()//2,
@@ -56,14 +62,17 @@ br = Board(wnd)
 wnd.blit(br.surface,(0,0))
 br.Place()
 
-for i in range(9):
-    br.Move("X",i)
+br2 = Board(wnd)
+wnd.blit(br2.surface,(w//3*1,0))
+br2.Place()
 
 
-# wnd.blit(br.cells[0].surface,(0,0))
+
 
 while(True):
+    cell = int(input("Celda: "))
 
+    br.Move("X",cell)
     pg.display.update()
 
     for event in pg.event.get():
