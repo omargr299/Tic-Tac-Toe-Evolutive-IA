@@ -3,7 +3,6 @@ from players import *
 import tensorflow as tf
 
 
-
 class Board():
     def __init__(self) -> None:
         self.cells = [0 for _ in range(9)]
@@ -59,7 +58,7 @@ if __name__ == "__main__":
         return tf.constant(cells)
 
     br = Board()
-    j1 = IA()
+    j1 = AI()
     j2 = RandPlayer()
     
     inputs = transform(br.cells)

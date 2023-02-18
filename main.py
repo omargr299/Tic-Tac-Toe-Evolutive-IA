@@ -6,7 +6,7 @@ from decor import *
 class Game():
     def __init__(self) -> None:
         self.board = Board()
-        self.p1 = IA()
+        self.p1 = AI()
         self.p2 = RandPlayer()
 
         decoratorLn("Tic Tac Toe")

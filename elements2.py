@@ -46,22 +46,23 @@ class Board(Panel):
         return [cell.piece for cell in self.cells]
 
     def Move(self,cell):
-        print( "Turn:", "IA" if self.turn==1 else "Random",
-                " | ",
-                "Cell:", cell,
-                " | ",
-                end=" ")
+        #print( "Turn:", "IA" if self.turn==1 else "Random",
+         #       " | ",
+          #      "Cell:", cell,
+           #     " | ",
+            #    end=" ")
 
         if not cell in self.pos: 
-            print("*No disponible cell*")
+            #print("*No disponible cell*")
             return (False,0)
 
         self.cells[cell].Put(self.turn,self.root)
-        print("Tab:",self.GetCells())
+        #print("Tab:",self.GetCells())
         self.pos.remove(cell)
         winner = self.Win()
+        
         self.Turn()
-        decoratorLn("Turn Change")
+        #decoratorLn("Turn Change")
 
         return (True,winner)
     
@@ -80,7 +81,10 @@ class Board(Panel):
         return 0
 
     def Check(self,a:int,b:int,c:int) -> int:
-        if self.cells[a] == self.cells[b] == self.cells[c] == self.turn:
+        cells = self.GetCells()
+        if cells[a] == cells[b] == cells[c] == self.turn:
+            self.DrawnWinLine(self.cells[a].rect.centerx, self.cells[a].rect.centery,
+                              self.cells[c].rect.centerx, self.cells[c].rect.centery)
             return True
         return False
 
@@ -106,28 +110,37 @@ class Board(Panel):
         for i in range(2):
             pg.draw.line(self.root,
                         pg.Color(0,0,0,0),
-                        (self.rect.x + x1*(i+1),self.rect.y),
-                        (self.rect.x + x1*(i+1),self.rect.y + self.rect.height),
+                        (self.rect.x + x1*(i+1), self.rect.y + 5),
+                        (self.rect.x + x1*(i+1), self.rect.y + self.rect.height - 5),
                         5)
         y1 = self.rect.height//3
         for i in range(2):
             pg.draw.line(self.root,
                         pg.Color(0,0,0,0),
-                        (self.rect.x,self.rect.y + y1*(i+1)),
-                        (self.rect.x + self.rect.width,self.rect.y + y1*(i+1)),
+                        (self.rect.x + 5, self.rect.y + y1*(i+1)),
+                        (self.rect.x + self.rect.width - 5, self.rect.y + y1*(i+1)),
                         5)
+
+    def DrawnWinLine(self,x1,y1,x2,y2):
+        pg.draw.line(self.root,
+                    pg.Color(0,255,0,0),
+                    (x1,y1),
+                    (x2,y2),
+                    3)
 
     def DrawnBoard(self):
         self.Place()
         self.DrawLines()
 
 class Game():
-    def __init__(self,wnd,x,y) -> None:
+    def __init__(self,wnd,x,y,num) -> None:
+        self.num = num
+        self.name = "Game " + str(num)
         self.board = Board(wnd,x,y)
-        self.p1 = IA()
+        self.p1 = AI()
         self.p2 = RandPlayer()
 
-        decoratorLn("Tic Tac Toe")
+        #decoratorLn("Tic Tac Toe")
 
     def Move(self):
         if self.board.turn==1:
@@ -137,18 +150,22 @@ class Game():
             player = self.p2
             inputs = self.board.pos
 
-        cell = player.Select(inputs)
+        cell = player.Select(inputs,False)
         doit,winner = self.board.Move(cell)
         
-        if winner: print(f"The winner is {'IA' if winner>0 else 'Random Player'}\n")
+        if winner: 
+            print(self.name)
+            print(f"The winner is {'IA' if winner>0 else 'Random Player'}\n")
+            pass
 
         if not doit:
-            player.Train(inputs,self.board.pos)
+            player.Train(inputs,self.board.pos,False)
 
         return winner
 
     def End(self):
-        decorator("Game Ends")
+
+        decorator(f"{self.name} Ends")
 
 if __name__=="__main__":
     pg.init()
@@ -164,7 +181,7 @@ if __name__=="__main__":
             boards[count].DrawnBoard()
             count+=1
 
-    print(boards)
+    #print(boards)
 
     pg.display.update()
 
